@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenClaw Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e2e8f0;--muted:#64748b;--accent:#818cf8;--green:#34d399;--red:#f87171;--yellow:#fbbf24}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:700;background:linear-gradient(135deg,#a78bfa,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.status{font-size:12px;padding:4px 10px;border-radius:20px;background:#34d39920;color:var(--green)}
+.status.off{background:#f8717120;color:var(--red)}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card h2{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.stat{font-size:32px;font-weight:800}
+.stat small{font-size:14px;color:var(--muted);font-weight:400}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{text-align:left;font-size:12px;color:var(--muted);text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:14px}
+.badge{padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600}
+.badge.testing{background:#818cf820;color:var(--accent)}
+.badge.backlog{background:#64748b20;color:var(--muted)}
+.badge.validated{background:#34d39920;color:var(--green)}
+.badge.killed{background:#f8717120;color:var(--red)}
+.badge.building{background:#fbbf2420;color:var(--yellow)}
+.badge.passed{background:#34d39920;color:var(--green)}
+.badge.failed{background:#f8717120;color:var(--red)}
+.badge.queued{background:#818cf820;color:var(--accent)}
+.badge.posted{background:#34d39920;color:var(--green)}
+.badge.scheduled{background:#fbbf2420;color:var(--yellow)}
+button,.btn{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+button:hover{opacity:0.85}
+button:disabled{opacity:0.4;cursor:not-allowed}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+input,textarea,select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;width:100%;font-family:inherit}
+textarea{resize:vertical;min-height:80px}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.form-group{margin-bottom:14px}
+.actions{display:flex;gap:8px;margin-top:16px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:100;display:none}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:500px;max-height:80vh;overflow-y:auto}
+.modal h2{font-size:18px;margin-bottom:16px}
+.login-wrap{display:flex;align-items:center;justify-content:center;height:100vh}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;width:400px;text-align:center}
+.login-card h1{margin-bottom:8px}
+.login-card p{color:var(--muted);font-size:14px;margin-bottom:24px}
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:200;animation:fadeIn 0.3s}
+.toast.ok{background:#34d39920;color:var(--green);border:1px solid #34d39940}
+.toast.err{background:#f8717120;color:var(--red);border:1px solid #f8717140}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.empty{color:var(--muted);text-align:center;padding:32px;font-size:14px}
+.tabs{display:flex;gap:4px;margin-bottom:20px}
+.tab{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;border:1px solid transparent}
+.tab.active{background:var(--accent);color:#fff}
+#app{display:none}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-wrap">
+<div class="login-card">
+<h1>OpenClaw</h1>
+<p>Enter your API credentials to continue</p>
+<div class="form-group"><label>API URL</label><input id="apiUrl" value="https://api.bizzchatai.ai" placeholder="https://api.bizzchatai.ai"></div>
+<div class="form-group"><label>API Token</label><input id="apiToken" type="password" placeholder="Paste your admin token"></div>
+<button onclick="doLogin()" style="width:100%;margin-top:8px">Connect</button>
+</div>
+</div>
+
+<div id="app">
+<div class="header">
+<h1>OpenClaw</h1>
+<div style="display:flex;align-items:center;gap:12px">
+<span id="connStatus" class="status">Connected</span>
+<button class="btn-sm btn-outline" onclick="logout()">Logout</button>
+</div>
+</div>
+<div class="container">
+<div class="tabs">
+<div class="tab active" onclick="switchTab('ideas',this)">Ideas</div>
+<div class="tab" onclick="switchTab('posts',this)">Scheduled Posts</div>
+<div class="tab" onclick="switchTab('quality',this)">Quality Gate</div>
+</div>
+
+<div id="tab-ideas">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<h2 style="font-size:18px">App Ideas</h2>
+<button onclick="showNewIdea()">+ New Idea</button>
+</div>
+<div class="grid" id="statsGrid"></div>
+<div class="card"><table><thead><tr><th>Title</th><th>Category</th><th>Stage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ideasBody"></tbody></table></div>
+</div>
+
+<div id="tab-posts" style="display:none">
+<h2 style="font-size:18px;margin-bottom:16px">Scheduled Posts</h2>
+<div class="card"><table><thead><tr><th>Variant</th><th>Scheduled For</th><th>Approval</th><th>Status</th></tr></thead><tbody id="postsBody"></tbody></table></div>
+</div>
+
+<div id="tab-quality" style="display:none">
+<h2 style="font-size:18px;margin-bottom:16px">Quality Gate Stats</h2>
+<div class="grid" id="qualityGrid"></div>
+</div>
+</div>
+</div>
+
+<div id="newIdeaModal" class="modal-bg">
+<div class="modal">
+<h2>New Idea</h2>
+<div class="form-group"><label>Title</label><input id="nTitle" placeholder="e.g. NoContact Tracker"></div>
+<div class="form-group"><label>Problem Statement</label><textarea id="nProblem" placeholder="Describe the pain point..."></textarea></div>
+<div class="form-group"><label>Audience</label><input id="nAudience" placeholder="e.g. 18-30 year olds going through breakups"></div>
+<div class="form-group"><label>Category</label><select id="nCategory"><option value="relationships">Relationships</option><option value="productivity">Productivity</option><option value="health">Health</option><option value="finance">Finance</option><option value="social">Social</option><option value="other">Other</option></select></div>
+<div class="actions">
+<button onclick="createIdea()">Create Idea</button>
+<button class="btn-outline" onclick="hideModal('newIdeaModal')">Cancel</button>
+</div>
+</div>
+</div>
+
+<div id="deployModal" class="modal-bg">
+<div class="modal">
+<h2>Deploy Idea</h2>
+<p style="color:var(--muted);margin-bottom:16px" id="deployInfo"></p>
+<p style="font-size:13px;color:var(--muted);margin-bottom:16px">This will generate AI content, render slides, upload to R2, run the quality gate, and schedule posts to TikTok.</p>
+<div class="actions">
+<button id="deployBtn" onclick="deployIdea()">Deploy Now</button>
+<button class="btn-outline" onclick="hideModal('deployModal')">Cancel</button>
+</div>
+</div>
+</div>
+
+<script>
+let API='',TOKEN='',deployingId='';
+
+function api(path,opts={}){
+  const h={'x-admin-token':TOKEN,'Content-Type':'application/json',...(opts.headers||{})};
+  return fetch(API+path,{...opts,headers:h}).then(async r=>{
+    if(!r.ok)throw new Error((await r.json().catch(()=>({}))).message||r.statusText);
+    return r.json();
+  });
+}
+
+function toast(msg,ok=true){
+  const d=document.createElement('div');d.className='toast '+(ok?'ok':'err');d.textContent=msg;
+  document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
+}
+
+async function doLogin(){
+  API=document.getElementById('apiUrl').value.replace(/\/$/,'');
+  TOKEN=document.getElementById('apiToken').value;
+  try{
+    const r=await api('/health');
+    if(r.ok){localStorage.setItem('oc_url',API);localStorage.setItem('oc_token',TOKEN);show();toast('Connected');}
+  }catch(e){toast('Connection failed: '+e.message,false);}
+}
+
+function logout(){localStorage.removeItem('oc_url');localStorage.removeItem('oc_token');location.reload();}
+
+function show(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';refresh();}
+
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  ['ideas','posts','quality'].forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'block':'none');
+  refresh();
+}
+
+async function refresh(){
+  try{
+    const ideas=await api('/ideas');
+    const posts=await api('/scheduled-posts');
+    let qStats=null;try{qStats=await api('/quality-verdicts/stats');}catch(e){}
+
+    document.getElementById('statsGrid').innerHTML=`
+      <div class="card"><h2>Total Ideas</h2><div class="stat">${ideas.length}</div></div>
+      <div class="card"><h2>Scheduled Posts</h2><div class="stat">${posts.length} <small>${posts.filter(p=>p.status==='queued').length} queued</small></div></div>
+    `;
+
+    const tbody=document.getElementById('ideasBody');
+    if(!ideas.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No ideas yet. Create one to get started.</td></tr>';}
+    else{tbody.innerHTML=ideas.map(i=>`<tr>
+      <td><strong>${esc(i.title)}</strong><br><span style="color:var(--muted);font-size:12px">${esc(i.problemStatement?.slice(0,60)||'')}...</span></td>
+      <td>${esc(i.category)}</td>
+      <td>${i.currentStage?'Stage '+i.currentStage:'—'}</td>
+      <td><span class="badge ${i.status}">${i.status}</span></td>
+      <td><button class="btn-sm" onclick="showDeploy('${i.id}','${esc(i.title)}')">Deploy</button></td>
+    </tr>`).join('');}
+
+    const pbody=document.getElementById('postsBody');
+    if(!posts.length){pbody.innerHTML='<tr><td colspan="4" class="empty">No scheduled posts yet.</td></tr>';}
+    else{pbody.innerHTML=posts.map(p=>`<tr>
+      <td style="font-size:12px;font-family:monospace">${p.contentVariantId?.slice(0,8)||'—'}</td>
+      <td>${p.scheduledFor?new Date(p.scheduledFor).toLocaleString():'—'}</td>
+      <td><span class="badge ${p.approvalState}">${p.approvalState}</span></td>
+      <td><span class="badge ${p.status}">${p.status}</span></td>
+    </tr>`).join('');}
+
+    if(qStats){
+      document.getElementById('qualityGrid').innerHTML=`
+        <div class="card"><h2>Total Judged</h2><div class="stat">${qStats.total||0}</div></div>
+        <div class="card"><h2>Pass Rate</h2><div class="stat">${qStats.passRate?Math.round(qStats.passRate*100):0}%</div></div>
+        <div class="card"><h2>Avg Score</h2><div class="stat">${qStats.avgScore?.toFixed(2)||'—'}</div></div>
+        <div class="card"><h2>Killed</h2><div class="stat">${qStats.failed||0}</div></div>
+      `;
+    }
+
+    document.getElementById('connStatus').className='status';document.getElementById('connStatus').textContent='Connected';
+  }catch(e){
+    document.getElementById('connStatus').className='status off';document.getElementById('connStatus').textContent='Error';
+    toast(e.message,false);
+  }
+}
+
+function showNewIdea(){document.getElementById('newIdeaModal').classList.add('show');}
+function showDeploy(id,title){deployingId=id;document.getElementById('deployInfo').textContent='Deploy "'+title+'" to TikTok pipeline?';document.getElementById('deployModal').classList.add('show');}
+function hideModal(id){document.getElementById(id).classList.remove('show');}
+
+async function createIdea(){
+  const body={title:gv('nTitle'),problemStatement:gv('nProblem'),audience:gv('nAudience'),category:gv('nCategory')};
+  try{await api('/ideas',{method:'POST',body:JSON.stringify(body)});toast('Idea created');hideModal('newIdeaModal');refresh();
+    ['nTitle','nProblem','nAudience'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){toast(e.message,false);}
+}
+
+async function deployIdea(){
+  const btn=document.getElementById('deployBtn');btn.disabled=true;btn.textContent='Deploying...';
+  try{
+    const r=await api('/ideas/'+deployingId+'/deploy',{method:'POST',body:JSON.stringify({tiktokAccountId:'default'})});
+    toast(`Deployed! ${r.qualityGate?.passed||0}/${r.qualityGate?.totalVariants||0} passed quality gate`);
+    hideModal('deployModal');refresh();
+  }catch(e){toast(e.message,false);}
+  finally{btn.disabled=false;btn.textContent='Deploy Now';}
+}
+
+function gv(id){return document.getElementById(id).value;}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+
+(function(){
+  const u=localStorage.getItem('oc_url'),t=localStorage.getItem('oc_token');
+  if(u&&t){API=u;TOKEN=t;show();}
+})();
+</script>
+</body>
+</html>
