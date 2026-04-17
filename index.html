@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw — Content Scheduling for TikTok</title>
+<meta name="description" content="OpenClaw is a content scheduling and publishing tool that helps creators plan, draft, and publish TikTok slideshow posts directly from a single dashboard.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦅</text></svg>">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  header {
+    padding: 24px 0;
+    border-bottom: 1px solid #eee;
+  }
+  nav { display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 22px; font-weight: 700; color: #000; text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: 24px; }
+  nav a { color: #444; text-decoration: none; font-size: 15px; }
+  nav a:hover { color: #000; }
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
+  }
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+  }
+  .hero h1 span { color: #fe2c55; }
+  .hero p {
+    font-size: 20px;
+    color: #555;
+    max-width: 680px;
+    margin: 0 auto 36px;
+  }
+  .cta {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .cta:hover { background: #333; }
+  section { padding: 80px 0; }
+  section h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+    letter-spacing: -0.5px;
+  }
+  section > .container > p.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 17px;
+    margin-bottom: 56px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+  .feature {
+    padding: 32px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background: #fff;
+  }
+  .feature .icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+  .feature h3 {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .feature p { color: #666; font-size: 15px; }
+  .how-it-works {
+    background: #fafafa;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .step {
+    text-align: center;
+  }
+  .step-num {
+    width: 44px;
+    height: 44px;
+    background: #fe2c55;
+    color: #fff;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  .step h4 { font-size: 17px; margin-bottom: 8px; font-weight: 700; }
+  .step p { color: #666; font-size: 15px; }
+  .tiktok-section {
+    background: #000;
+    color: #fff;
+    text-align: center;
+  }
+  .tiktok-section h2 { color: #fff; }
+  .tiktok-section p {
+    color: #bbb;
+    max-width: 700px;
+    margin: 0 auto 24px;
+    font-size: 17px;
+  }
+  .scopes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .scope {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid #eee;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+  }
+  footer a { color: #444; text-decoration: none; margin: 0 12px; }
+  footer a:hover { color: #000; }
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 38px; }
+    .hero p { font-size: 17px; }
+    section h2 { font-size: 28px; }
+    nav ul { gap: 16px; }
+    nav ul li:first-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="/" class="logo">OpenClaw</a>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="terms.html">Terms</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Schedule and publish<br><span>TikTok slideshows</span> with ease</h1>
+    <p>OpenClaw is a content scheduling and publishing tool that helps creators plan, draft, and automatically publish TikTok slideshow posts directly from a single dashboard — powered by TikTok's Content Posting API.</p>
+    <a href="#how" class="cta">See How It Works</a>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <h2>What OpenClaw does</h2>
+    <p class="subtitle">Everything you need to consistently ship TikTok slideshow content, on schedule.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon">📝</div>
+        <h3>Draft slideshow posts</h3>
+        <p>Upload multiple images, write captions, add hashtags, and compose complete TikTok slideshow drafts in one place.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📅</div>
+        <h3>Schedule in advance</h3>
+        <p>Plan your content calendar days or weeks ahead. OpenClaw publishes each post at the exact time you set.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🚀</div>
+        <h3>Automatic publishing</h3>
+        <p>Posts are uploaded directly to the connected TikTok account using TikTok's official Content Posting API.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📊</div>
+        <h3>Performance insights</h3>
+        <p>Track views, likes, comments, and shares for published posts so you can double down on what's working.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🔐</div>
+        <h3>Secure OAuth login</h3>
+        <p>Connect your TikTok account safely with TikTok's Login Kit. You stay in control — revoke access any time.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">👤</div>
+        <h3>One clean dashboard</h3>
+        <p>See your drafts, scheduled posts, published posts, and account stats all in a single, simple interface.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="how-it-works">
+  <div class="container">
+    <h2>How it works</h2>
+    <p class="subtitle">Four simple steps to keep your TikTok posting consistent.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Sign in with TikTok</h4>
+        <p>Securely connect your TikTok account using TikTok's official Login Kit.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Create a slideshow</h4>
+        <p>Upload images, write your caption, and preview the post before scheduling.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Pick a time</h4>
+        <p>Schedule the post for any future time — or publish it immediately.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>Track results</h4>
+        <p>View performance stats right inside OpenClaw once your post goes live.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tiktok-section">
+  <div class="container">
+    <h2>Built on TikTok for Developers</h2>
+    <p>OpenClaw uses TikTok's official developer platform — Login Kit for authentication and the Content Posting API for publishing slideshows. We request only the scopes required to operate the product:</p>
+    <div class="scopes">
+      <span class="scope">user.info.basic</span>
+      <span class="scope">user.info.profile</span>
+      <span class="scope">user.info.stats</span>
+      <span class="scope">video.list</span>
+      <span class="scope">video.upload</span>
+      <span class="scope">video.publish</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>
+      <a href="terms.html">Terms of Service</a> ·
+      <a href="privacy.html">Privacy Policy</a> ·
+      <a href="mailto:dorukdumlu@gmail.com">Contact</a>
+    </p>
+    <p style="margin-top: 12px;">© 2026 OpenClaw. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
