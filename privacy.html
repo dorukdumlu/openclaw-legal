@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OpenClaw — Privacy Policy</title>
+<title>PostDraft — Privacy Policy</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#e2e8f0;min-height:100vh;display:flex;justify-content:center;padding:48px 24px}
@@ -15,30 +15,43 @@ p{color:#94a3b8;font-size:15px;line-height:1.7;margin-bottom:16px}
 ul{color:#94a3b8;font-size:15px;line-height:1.7;margin:0 0 16px 24px}
 a{color:#818cf8;text-decoration:none}
 a:hover{text-decoration:underline}
+.brand{font-weight:700;color:#f1f5f9}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>Privacy Policy</h1>
-<p class="updated">Last updated: April 2026</p>
+<h1>PostDraft — Privacy Policy</h1>
+<p class="updated">Last updated: May 2026</p>
+
+<h2>About PostDraft</h2>
+<p><span class="brand">PostDraft</span> is a content scheduling and publishing tool for TikTok slideshow posts. This Privacy Policy explains how PostDraft handles your data.</p>
 
 <h2>Data Collection</h2>
-<p>OpenClaw does not collect, store, or share any personal data from TikTok users. The app accesses TikTok's API solely to publish content on behalf of the authenticated account owner.</p>
+<p>PostDraft does not collect, store, or share any personal data from TikTok users beyond what is strictly required to provide the scheduling and publishing functionality. PostDraft accesses TikTok's API solely to publish content on behalf of the authenticated account owner.</p>
 
 <h2>TikTok API Usage</h2>
-<p>When you connect your TikTok account, OpenClaw accesses the following through TikTok's official OAuth flow:</p>
+<p>When you connect your TikTok account, PostDraft accesses the following through TikTok's official OAuth flow:</p>
 <ul>
-<li>Basic profile information (username, display name)</li>
-<li>Ability to publish content (photos, slideshows) to your account</li>
-<li>Post performance analytics (views, likes, comments)</li>
+<li><strong>user.info.basic</strong> — basic profile information (open ID, avatar, display name)</li>
+<li><strong>user.info.profile</strong> — profile web link, deep link, bio description, verification status</li>
+<li><strong>user.info.stats</strong> — likes count, follower count, following count, video count</li>
+<li><strong>video.list</strong> — read access to your existing public videos</li>
+<li><strong>video.upload</strong> — upload videos and photo slideshows to your account</li>
+<li><strong>video.publish</strong> — publish uploaded content to your account</li>
 </ul>
-<p>This data is used exclusively for content scheduling and performance tracking. It is never sold, shared with third parties, or used for advertising.</p>
+<p>This data is used exclusively for content scheduling, publishing, and performance tracking inside PostDraft. It is never sold, shared with third parties, or used for advertising.</p>
 
 <h2>Data Storage</h2>
-<p>Post content and analytics data are stored on the account owner's own self-hosted infrastructure. No data is transmitted to external servers beyond TikTok's own API.</p>
+<p>Post content, drafts, and analytics data are stored on the PostDraft account owner's own self-hosted infrastructure. No data is transmitted to external servers beyond TikTok's own API.</p>
+
+<h2>Data Retention</h2>
+<p>PostDraft retains data only as long as the user maintains an active connection to their TikTok account. Disconnecting the TikTok account from PostDraft immediately deletes all stored authentication tokens.</p>
 
 <h2>Data Deletion</h2>
-<p>You can disconnect your TikTok account at any time through the app settings. Upon disconnection, all stored authentication tokens are immediately deleted.</p>
+<p>You can disconnect your TikTok account at any time through the PostDraft settings. Upon disconnection, all stored authentication tokens and personal data are immediately deleted. To request full deletion of any remaining data, contact <a href="mailto:dorukdumlu@gmail.com">dorukdumlu@gmail.com</a>.</p>
+
+<h2>Third-Party Services</h2>
+<p>PostDraft only communicates with TikTok's official APIs. No third-party tracking, analytics, or advertising services are used.</p>
 
 <h2>Contact</h2>
 <p>For privacy-related questions, contact <a href="mailto:dorukdumlu@gmail.com">dorukdumlu@gmail.com</a>.</p>
